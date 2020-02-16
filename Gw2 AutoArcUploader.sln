@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gw2 AutoArcUploader", "Gw2 AutoArcUploader\Gw2 AutoArcUploader.csproj", "{062460A9-FA77-40EA-BBE1-958A38845EF4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug + Release|Any CPU = Debug + Release|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Debug + Release|Any CPU.ActiveCfg = Debug + Release|Any CPU
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Debug + Release|Any CPU.Build.0 = Debug + Release|Any CPU
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{062460A9-FA77-40EA-BBE1-958A38845EF4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {48190E22-383E-47B5-9971-471279E5D1E1}
+	EndGlobalSection
+EndGlobal
