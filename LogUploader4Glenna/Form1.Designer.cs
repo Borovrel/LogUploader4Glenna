@@ -48,6 +48,7 @@
             this.backgroundWorker4 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker5 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
+            this.progressBarUpload = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -141,6 +142,7 @@
             this.btnWatchDirectory.TabIndex = 9;
             this.btnWatchDirectory.Text = "Starte Überwachung";
             this.btnWatchDirectory.UseVisualStyleBackColor = true;
+            this.btnWatchDirectory.Visible = false;
             this.btnWatchDirectory.Click += new System.EventHandler(this.btnWatchDirectory_Click);
             // 
             // radioButton1
@@ -162,7 +164,6 @@
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(123, 17);
             this.radioButton2.TabIndex = 11;
-            this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Lade Logs neu hoch";
             this.radioButton2.UseVisualStyleBackColor = true;
             // 
@@ -218,11 +219,19 @@
             this.backgroundWorker6.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker6_DoWork);
             this.backgroundWorker6.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker6_RunWorkerCompleted);
             // 
+            // progressBarUpload
+            // 
+            this.progressBarUpload.Location = new System.Drawing.Point(16, 400);
+            this.progressBarUpload.Name = "progressBarUpload";
+            this.progressBarUpload.Size = new System.Drawing.Size(509, 23);
+            this.progressBarUpload.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 450);
+            this.Controls.Add(this.progressBarUpload);
             this.Controls.Add(this.combBoxContent);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnWatchDirectory);
@@ -267,6 +276,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker4;
         private System.ComponentModel.BackgroundWorker backgroundWorker5;
         private System.ComponentModel.BackgroundWorker backgroundWorker6;
+        private System.Windows.Forms.ProgressBar progressBarUpload;
     }
 }
 

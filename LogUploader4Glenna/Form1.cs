@@ -52,6 +52,10 @@ namespace LogUploader4Glenna
 
         private void BefuelleListe()
         {
+            label4.Text = "0%";
+            progressBarUpload.Value = 0;
+            Update();
+
             var files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.zevtc", SearchOption.AllDirectories);
 
             List<LogInfos> zaehelendeLogs = new List<LogInfos>();
@@ -194,6 +198,9 @@ namespace LogUploader4Glenna
             }
             #endregion
 
+            listeLogTriesCount = listeLogTries.Count;
+            prozentualerAnteilProLog = 0.0;
+            prozentualerAnteilProLog = 100 / listeLogTriesCount;
             #endregion //PVE
         }
 
@@ -347,12 +354,15 @@ namespace LogUploader4Glenna
                 txtBoxUploadedLogs.AppendText(UploadLog(log.pfad) + " " + log.versuch + "\r\n");
                 prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
                 label4.Text = prozentualabgeschlossen + "%";
+                progressBarUpload.Value = (int)prozentualabgeschlossen;
                 Console.WriteLine("So viel: " + listeLogTries.Count);
                 Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
                 Console.WriteLine(prozentualabgeschlossen + "%");
             }
 
             label4.Text = "100%";
+            progressBarUpload.Value = 100;
+            Update();
             MessageBox.Show("Alle Logs wurden hochgeladen");
 
         }
@@ -416,6 +426,8 @@ namespace LogUploader4Glenna
             }
 
             label4.Text = "100";
+            progressBarUpload.Value = 100;
+            Update();
             MessageBox.Show("Alle Logs wurden hochgeladen");
         }
 
@@ -460,30 +472,51 @@ namespace LogUploader4Glenna
         {
 
         }
-
+        double abgearbeitet = 0.0;
         private void backgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            abgearbeitet = prozentualerAnteilProLog + abgearbeitet;
+            label4.Text = abgearbeitet +"%";
+            progressBarUpload.Value = (int)abgearbeitet;
         }
 
         private void backgroundWorker4_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            abgearbeitet = prozentualerAnteilProLog + abgearbeitet;
+            label4.Text = abgearbeitet + "%";
+            progressBarUpload.Value = (int)abgearbeitet;
         }
 
         private void backgroundWorker5_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            abgearbeitet = prozentualerAnteilProLog + abgearbeitet;
+            label4.Text = abgearbeitet + "%";
+            progressBarUpload.Value = (int)abgearbeitet;
         }
 
         private void backgroundWorker6_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            abgearbeitet = prozentualerAnteilProLog + abgearbeitet;
+            label4.Text = abgearbeitet + "%";
+            progressBarUpload.Value = (int)abgearbeitet;
         }
+
+        public FileSystemWatcher fsW;
 
         private void btnWatchDirectory_Click(object sender, EventArgs e)
         {
             ordnerUeberwachungLaueft = !ordnerUeberwachungLaueft;
+            fsW = new FileSystemWatcher();
+            fsW.Path = txtBoxLogOrdner.Text;
+            fsW.Filter = "*.zevtc";
+
+            fsW.IncludeSubdirectories = true;
+
+            // Events definieren
+            fsW.Changed += new FileSystemEventHandler(fsW_Changed);
+            fsW.Created += new FileSystemEventHandler(fsW_Created);
+            fsW.Deleted += new FileSystemEventHandler(fsW_Deleted);
+            fsW.Renamed += new RenamedEventHandler(fsW_Renamed);
 
             //Passe den Anzeigetext an
             if (ordnerUeberwachungLaueft)
@@ -495,6 +528,31 @@ namespace LogUploader4Glenna
             {
                 btnWatchDirectory.Text = "Starte Überwachung";
                 Update();
+            }
+        }
+
+        // Handler für alle Events
+        void fsW_Renamed(object sender, RenamedEventArgs e)
+        {
+            //MessageBox.Show("Umbenannt: " + e.Name);
+        }
+
+        void fsW_Changed(object sender, FileSystemEventArgs e)
+        {
+            //MessageBox.Show("Umbenannt: " + e.Name);
+        }
+
+        void fsW_Deleted(object sender, FileSystemEventArgs e)
+        {
+            //MessageBox.Show("Gelöscht: " + e.Name);
+        }
+
+        void fsW_Created(object sender, FileSystemEventArgs e)
+        {
+            if (ordnerUeberwachungLaueft)
+            {
+                //MessageBox.Show("Log: "+txtBoxLogOrdner.Text+e.Name);
+                txtBoxUploadedLogs.AppendText(UploadLog(txtBoxLogOrdner.Text+e.Name));
             }
         }
 
