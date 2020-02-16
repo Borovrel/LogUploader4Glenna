@@ -56,7 +56,11 @@ namespace LogUploader4Glenna
             progressBarUpload.Value = 0;
             Update();
 
-            var files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.zevtc  OR *.evtc", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.zevtc", SearchOption.AllDirectories);
+            if(files.Count() == 0)
+            {
+                files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.evtc", SearchOption.AllDirectories);
+            }
 
             List<LogInfos> zaehelendeLogs = new List<LogInfos>();
             zaehelendeLogs.Clear();
