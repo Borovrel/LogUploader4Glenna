@@ -204,7 +204,11 @@ namespace LogUploader4Glenna
 
             listeLogTriesCount = listeLogTries.Count;
             prozentualerAnteilProLog = 0.0;
-            prozentualerAnteilProLog = 100 / listeLogTriesCount;
+            if(listeLogTriesCount > 0)
+            {
+                prozentualerAnteilProLog = 100 / listeLogTriesCount;
+            }
+                
             #endregion //PVE
         }
 
