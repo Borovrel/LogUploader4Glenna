@@ -49,7 +49,11 @@
             this.backgroundWorker5 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
             this.progressBarUpload = new System.Windows.Forms.ProgressBar();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -171,7 +175,7 @@
             // 
             this.groupBox1.Controls.Add(this.radioButton1);
             this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Location = new System.Drawing.Point(528, 224);
+            this.groupBox1.Location = new System.Drawing.Point(531, 262);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(193, 100);
             this.groupBox1.TabIndex = 12;
@@ -184,7 +188,7 @@
             this.combBoxContent.Items.AddRange(new object[] {
             "PvE Raidbosse",
             "WvW"});
-            this.combBoxContent.Location = new System.Drawing.Point(534, 168);
+            this.combBoxContent.Location = new System.Drawing.Point(534, 235);
             this.combBoxContent.Name = "combBoxContent";
             this.combBoxContent.Size = new System.Drawing.Size(173, 21);
             this.combBoxContent.TabIndex = 13;
@@ -226,11 +230,45 @@
             this.progressBarUpload.Size = new System.Drawing.Size(509, 23);
             this.progressBarUpload.TabIndex = 14;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.radioButton4);
+            this.groupBox2.Controls.Add(this.radioButton3);
+            this.groupBox2.Location = new System.Drawing.Point(531, 71);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(200, 119);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Ordnerstruktur";
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(1, 20);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(153, 17);
+            this.radioButton3.TabIndex = 0;
+            this.radioButton3.Text = "Nur nach Bossen aufgeteilt";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(1, 43);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(130, 17);
+            this.radioButton4.TabIndex = 1;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "Unterordner Charakter";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 450);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.progressBarUpload);
             this.Controls.Add(this.combBoxContent);
             this.Controls.Add(this.groupBox1);
@@ -249,6 +287,8 @@
             this.Text = "LogUploader4Glenna";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -277,6 +317,9 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker5;
         private System.ComponentModel.BackgroundWorker backgroundWorker6;
         private System.Windows.Forms.ProgressBar progressBarUpload;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
     }
 }
 

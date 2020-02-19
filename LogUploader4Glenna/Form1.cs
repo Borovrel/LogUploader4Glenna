@@ -88,7 +88,15 @@ namespace LogUploader4Glenna
                         //Das Erstelldatum muss im Zeitraum liegen
                         LogInfos loginfos = new LogInfos();
 
-                        loginfos.boss = Path.GetFileName(Path.GetDirectoryName(info.DirectoryName));
+                        if (radioButton3.Checked)
+                        {
+                            loginfos.boss = info.DirectoryName;
+                        }
+                        if (radioButton4.Checked)
+                        {
+                            loginfos.boss = Path.GetFileName(Path.GetDirectoryName(info.DirectoryName));
+                        }
+                        
                         loginfos.erstellDatum = info.CreationTime;
                         loginfos.pfad = info.FullName;
                         
@@ -516,7 +524,7 @@ namespace LogUploader4Glenna
             ordnerUeberwachungLaueft = !ordnerUeberwachungLaueft;
             fsW = new FileSystemWatcher();
             fsW.Path = txtBoxLogOrdner.Text;
-            fsW.Filter = "*.zevtc";
+            fsW.Filter = "*.evtc";
 
             fsW.IncludeSubdirectories = true;
 
