@@ -70,7 +70,7 @@ namespace LogUploader4Glenna
 
             List<LogInfos> wvwlogs = new List<LogInfos>();
             wvwlogs.Clear();
-
+            
             txtBoxUploadedLogs.Clear();
             foreach (string file in files)
             {
@@ -82,7 +82,8 @@ namespace LogUploader4Glenna
                     {
                         continue; //Überspringt alle Einträge, welche im WvW Pfad liegen
                     }
-                    if(info.Length < 100)
+                    
+                    if(info.Length <= int.Parse(txtBoxMaxLogSize.Text))
                     {
                         continue; //überspringt alle Einträge, deren Größe kleiner als 100 KB sind
                     }
@@ -622,23 +623,6 @@ namespace LogUploader4Glenna
             {
                 MessageBox.Show("Du besitzt schon die aktuellste Version");
             }
-
-
-
-            //XmlNode myNode = doc.SelectSingleNode("/Version/");
-            //MessageBox.Show("Version "+myNode.Value);
-
-
-
-            /*
-             XmlDocument doc = new XmlDocument();
-            doc.Load(PathToXML);
-
-            XmlNode myNode= doc.SelectSingleNode("/setting[@name='Transportbehaeltnis']");
-            textBox1.Text = myNode.Attributes["value"].InnerText;
-             */
-
-
         }
 
         private string holeNeueVersion()
@@ -677,6 +661,11 @@ namespace LogUploader4Glenna
             return neueVersion;
 
 
+        }
+
+        private void txtBoxMaxLogSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
     }
 }

@@ -55,6 +55,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.dateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nachUpdatesPrüfenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtBoxMaxLogSize = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -292,11 +294,32 @@
             this.nachUpdatesPrüfenToolStripMenuItem.Text = "Nach Updates Prüfen";
             this.nachUpdatesPrüfenToolStripMenuItem.Click += new System.EventHandler(this.nachUpdatesPrüfenToolStripMenuItem_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(137, 66);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(127, 13);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Maximale Loggröße in KB";
+            // 
+            // txtBoxMaxLogSize
+            // 
+            this.txtBoxMaxLogSize.Location = new System.Drawing.Point(271, 64);
+            this.txtBoxMaxLogSize.Name = "txtBoxMaxLogSize";
+            this.txtBoxMaxLogSize.Size = new System.Drawing.Size(44, 20);
+            this.txtBoxMaxLogSize.TabIndex = 18;
+            this.txtBoxMaxLogSize.Text = "100";
+            this.txtBoxMaxLogSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtBoxMaxLogSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBoxMaxLogSize_KeyPress);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(733, 450);
+            this.ClientSize = new System.Drawing.Size(733, 459);
+            this.Controls.Add(this.txtBoxMaxLogSize);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.progressBarUpload);
             this.Controls.Add(this.combBoxContent);
@@ -356,6 +379,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem dateiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nachUpdatesPrüfenToolStripMenuItem;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtBoxMaxLogSize;
     }
 }
 
