@@ -5,11 +5,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace LogUploader4Glenna
 {
@@ -595,11 +598,85 @@ namespace LogUploader4Glenna
 
         private void nachUpdatesPrüfenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //ggfs. später versuchen über md5 hash zu ermitteln
+            
             //Logik:
             string aktuelleVersion = ""; //Muss ausgelesen werden aus aktueller Datei
+            XmlDocument doc = new XmlDocument();
+            doc.Load("Version.xml");
+
+            XmlElement root = doc.DocumentElement;
+
+            string versionAktuell1 = "";
+            versionAktuell1 = root.FirstChild.InnerXml;
+            MessageBox.Show(""+ versionAktuell1);
+            aktuelleVersion = versionAktuell1;
+
+            string neueVersion = holeNeueVersion();
+
+            if(neueVersion != aktuelleVersion)
+            {
+                MessageBox.Show("Es gibt eine neue Version.\nNeu: "+neueVersion+"\nAktuelle Version: "+aktuelleVersion);
+            }
+            else
+            {
+                MessageBox.Show("Du besitzt schon die aktuellste Version");
+            }
+
+
+
+            //XmlNode myNode = doc.SelectSingleNode("/Version/");
+            //MessageBox.Show("Version "+myNode.Value);
+
+
+
+            /*
+             XmlDocument doc = new XmlDocument();
+            doc.Load(PathToXML);
+
+            XmlNode myNode= doc.SelectSingleNode("/setting[@name='Transportbehaeltnis']");
+            textBox1.Text = myNode.Attributes["value"].InnerText;
+             */
+
 
         }
 
+        private string holeNeueVersion()
+        {
+            string neueVersion = "";
+            #region File Download
+            WebClient webclient = new WebClient();
+            string remoteUri = "https://github.com/Borovrel/LogUploader4Glenna/archive/master.zip";
+            webclient.DownloadFile(new Uri(remoteUri), "Uploader4Glenna.zip");
+            Console.WriteLine("File fertig gedownloadet.");
+            #endregion
 
+            #region Vergleich
+            string zipPath = "Uploader4Glenna.zip";
+            string ExtractPath = Directory.GetCurrentDirectory()+"/Uploader4GlennaExtract";
+            ZipFile.ExtractToDirectory(zipPath, ExtractPath);
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Directory.GetCurrentDirectory()+ "/Uploader4GlennaExtract/LogUploader4Glenna-master/LogUploader4Glenna/Version.xml");
+            XmlElement root = doc.DocumentElement;
+
+            neueVersion = root.FirstChild.InnerXml;
+            #endregion
+
+            #region Löschen
+            try
+            {
+                File.Delete(Directory.GetCurrentDirectory()+ "\\Uploader4Glenna.zip");
+                Directory.Delete(ExtractPath,true);
+            }catch(Exception Error)
+            {
+                MessageBox.Show("Beim Löschen ist etwas schiefgelaufen: "+Error);
+            }
+            #endregion
+
+            return neueVersion;
+
+
+        }
     }
 }
