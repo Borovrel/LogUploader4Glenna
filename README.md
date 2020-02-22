@@ -9,9 +9,8 @@ Die Logs werden wie folgt ausgewählt:
 **Dabei wird immer nur der letzte Log hochgeladen!** Dies liegt daran, dass Glenna nur den letzten Versuch möchte und die Anzahl der benötigten Versuche. Alle Logs die im oben genannten ausgewählt wurden und im entsprechenden Ordner liegen (Unterordner zählen auch) (z.B. Talwächter) zählen dann jeweils für den jeweiligen Boss als Versuch.
 
 Es kann aktuell zu folgenden Fehlern kommen:
-- Die Uploadfortschrittanzeige ist falsch (Beim Upload mit mehreren Threads)
 - Beim Versuch mehrmals Logs hintereinander hochladen zu wollen!
+- Der Log liegt in zu vielen Unterordner => Der falsche Boss wird erkannt => Logs werden falsch hochgeladen ebenso die Anzahl der benötigten Versuche
 
 Anmerkungen:
-- Uploadanzeige wird für mehrere Threads im Laufe der nächsten Versionen hoffentlich gefixt.
 - Weniger der oben genannten Fehler
