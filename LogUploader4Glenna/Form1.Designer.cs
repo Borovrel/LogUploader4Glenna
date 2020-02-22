@@ -50,16 +50,20 @@
             this.backgroundWorker6 = new System.ComponentModel.BackgroundWorker();
             this.progressBarUpload = new System.Windows.Forms.ProgressBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.dateiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nachUpdatesPrüfenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(12, 38);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 0;
@@ -68,7 +72,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 41);
+            this.label2.Location = new System.Drawing.Point(12, 66);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 1;
@@ -77,7 +81,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 372);
+            this.label3.Location = new System.Drawing.Point(12, 397);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 2;
@@ -86,7 +90,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(105, 372);
+            this.label4.Location = new System.Drawing.Point(104, 397);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(15, 13);
             this.label4.TabIndex = 3;
@@ -94,14 +98,14 @@
             // 
             // txtBoxLogOrdner
             // 
-            this.txtBoxLogOrdner.Location = new System.Drawing.Point(79, 12);
+            this.txtBoxLogOrdner.Location = new System.Drawing.Point(78, 37);
             this.txtBoxLogOrdner.Name = "txtBoxLogOrdner";
             this.txtBoxLogOrdner.Size = new System.Drawing.Size(292, 20);
             this.txtBoxLogOrdner.TabIndex = 4;
             // 
             // txtBoxZeitraum
             // 
-            this.txtBoxZeitraum.Location = new System.Drawing.Point(79, 38);
+            this.txtBoxZeitraum.Location = new System.Drawing.Point(78, 63);
             this.txtBoxZeitraum.Name = "txtBoxZeitraum";
             this.txtBoxZeitraum.Size = new System.Drawing.Size(42, 20);
             this.txtBoxZeitraum.TabIndex = 5;
@@ -111,7 +115,7 @@
             // 
             // txtBoxUploadedLogs
             // 
-            this.txtBoxUploadedLogs.Location = new System.Drawing.Point(16, 64);
+            this.txtBoxUploadedLogs.Location = new System.Drawing.Point(15, 89);
             this.txtBoxUploadedLogs.Multiline = true;
             this.txtBoxUploadedLogs.Name = "txtBoxUploadedLogs";
             this.txtBoxUploadedLogs.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
@@ -120,7 +124,7 @@
             // 
             // btnUploadOneThread
             // 
-            this.btnUploadOneThread.Location = new System.Drawing.Point(528, 8);
+            this.btnUploadOneThread.Location = new System.Drawing.Point(527, 33);
             this.btnUploadOneThread.Name = "btnUploadOneThread";
             this.btnUploadOneThread.Size = new System.Drawing.Size(179, 23);
             this.btnUploadOneThread.TabIndex = 7;
@@ -130,7 +134,7 @@
             // 
             // btnUploadMultipleThreads
             // 
-            this.btnUploadMultipleThreads.Location = new System.Drawing.Point(528, 41);
+            this.btnUploadMultipleThreads.Location = new System.Drawing.Point(527, 66);
             this.btnUploadMultipleThreads.Name = "btnUploadMultipleThreads";
             this.btnUploadMultipleThreads.Size = new System.Drawing.Size(179, 23);
             this.btnUploadMultipleThreads.TabIndex = 8;
@@ -140,7 +144,7 @@
             // 
             // btnWatchDirectory
             // 
-            this.btnWatchDirectory.Location = new System.Drawing.Point(377, 10);
+            this.btnWatchDirectory.Location = new System.Drawing.Point(376, 35);
             this.btnWatchDirectory.Name = "btnWatchDirectory";
             this.btnWatchDirectory.Size = new System.Drawing.Size(121, 23);
             this.btnWatchDirectory.TabIndex = 9;
@@ -175,7 +179,7 @@
             // 
             this.groupBox1.Controls.Add(this.radioButton1);
             this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Location = new System.Drawing.Point(531, 262);
+            this.groupBox1.Location = new System.Drawing.Point(530, 287);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(193, 100);
             this.groupBox1.TabIndex = 12;
@@ -188,7 +192,7 @@
             this.combBoxContent.Items.AddRange(new object[] {
             "PvE Raidbosse",
             "WvW"});
-            this.combBoxContent.Location = new System.Drawing.Point(534, 235);
+            this.combBoxContent.Location = new System.Drawing.Point(533, 260);
             this.combBoxContent.Name = "combBoxContent";
             this.combBoxContent.Size = new System.Drawing.Size(173, 21);
             this.combBoxContent.TabIndex = 13;
@@ -225,7 +229,7 @@
             // 
             // progressBarUpload
             // 
-            this.progressBarUpload.Location = new System.Drawing.Point(16, 400);
+            this.progressBarUpload.Location = new System.Drawing.Point(15, 425);
             this.progressBarUpload.Name = "progressBarUpload";
             this.progressBarUpload.Size = new System.Drawing.Size(509, 23);
             this.progressBarUpload.TabIndex = 14;
@@ -234,22 +238,12 @@
             // 
             this.groupBox2.Controls.Add(this.radioButton4);
             this.groupBox2.Controls.Add(this.radioButton3);
-            this.groupBox2.Location = new System.Drawing.Point(531, 71);
+            this.groupBox2.Location = new System.Drawing.Point(530, 96);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(200, 119);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ordnerstruktur";
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(1, 20);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(153, 17);
-            this.radioButton3.TabIndex = 0;
-            this.radioButton3.Text = "Nur nach Bossen aufgeteilt";
-            this.radioButton3.UseVisualStyleBackColor = true;
             // 
             // radioButton4
             // 
@@ -262,6 +256,41 @@
             this.radioButton4.TabStop = true;
             this.radioButton4.Text = "Unterordner Charakter";
             this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(1, 20);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(153, 17);
+            this.radioButton3.TabIndex = 0;
+            this.radioButton3.Text = "Nur nach Bossen aufgeteilt";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dateiToolStripMenuItem,
+            this.nachUpdatesPrüfenToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(733, 24);
+            this.menuStrip1.TabIndex = 16;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // dateiToolStripMenuItem
+            // 
+            this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
+            this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.dateiToolStripMenuItem.Text = "Datei";
+            this.dateiToolStripMenuItem.Visible = false;
+            // 
+            // nachUpdatesPrüfenToolStripMenuItem
+            // 
+            this.nachUpdatesPrüfenToolStripMenuItem.Name = "nachUpdatesPrüfenToolStripMenuItem";
+            this.nachUpdatesPrüfenToolStripMenuItem.Size = new System.Drawing.Size(131, 20);
+            this.nachUpdatesPrüfenToolStripMenuItem.Text = "Nach Updates Prüfen";
+            this.nachUpdatesPrüfenToolStripMenuItem.Click += new System.EventHandler(this.nachUpdatesPrüfenToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -282,6 +311,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "LogUploader4Glenna";
@@ -289,6 +320,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,6 +353,9 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem dateiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nachUpdatesPrüfenToolStripMenuItem;
     }
 }
 

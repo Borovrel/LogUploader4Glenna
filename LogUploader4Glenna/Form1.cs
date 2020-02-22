@@ -592,5 +592,14 @@ namespace LogUploader4Glenna
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
+
+        private void nachUpdatesPrüfenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Logik:
+            string aktuelleVersion = ""; //Muss ausgelesen werden aus aktueller Datei
+
+        }
+
+
     }
 }

@@ -93,5 +93,8 @@
   <ItemGroup>
     <Folder Include="LogUploader4Glenna\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Version.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
