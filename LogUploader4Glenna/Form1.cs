@@ -52,74 +52,174 @@ namespace LogUploader4Glenna
             combBoxContent.SelectedIndex = 0;
             
         }
+        /*
+        private string Bossordner(ref string Ordernpfad)
+        {
+            string ausgabe = Ordernpfad;
 
+            if(Ordernpfad != txtBoxLogOrdner.Text)
+            {
+                Console.WriteLine(Ordernpfad+"\n"+txtBoxLogOrdner.Text);
+                var Directories = Directory.GetDirectories(txtBoxLogOrdner.Text);
+                foreach (var item in Directories)
+                {
+                    if(item == Ordernpfad)
+                    {
+
+                    }
+                }
+                Ordernpfad = Bossordner(ref Ordernpfad);
+            }
+
+            return ausgabe;
+        }
+        */
+
+        private void ListeAndersBefuellen(ref List<LogInfos> listeDerLogs)
+        {
+            var Directories = Directory.GetDirectories(txtBoxLogOrdner.Text);
+
+            txtBoxUploadedLogs.Clear();
+
+            foreach (var item in Directories)
+            {
+                var files = Directory.GetFiles(item, "*.zevtc", SearchOption.AllDirectories);
+                if (files.Count() == 0)
+                {
+                    files = Directory.GetFiles(item, "*.evtc", SearchOption.AllDirectories);
+                }
+
+                foreach (var file in files)
+                {
+                    var info = new FileInfo(file);
+                    if (combBoxContent.SelectedIndex == 0)
+                    {
+                        //Nur PvE Logs
+                        if (item.Contains("WvW"))
+                        {
+                            continue; //Überspringt alle Einträge, welche im WvW Pfad liegen
+                        }
+
+                        if (info.Length <= int.Parse(txtBoxMaxLogSize.Text))
+                        {
+                            continue; //überspringt alle Einträge, deren Größe kleiner als 100 KB sind
+                        }
+                        if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                        {
+                            //Das Erstelldatum muss im Zeitraum liegen
+                            LogInfos loginfos = new LogInfos();
+                            loginfos.boss = item;
+
+                            loginfos.erstellDatum = info.CreationTime;
+                            loginfos.pfad = info.FullName;
+
+                            listeDerLogs.Add(loginfos); //Fügt der Liste hinzu
+                        }
+                    }
+                    else
+                    {
+                        if (item.Contains("WvW"))
+                        {
+                            continue; //Überspringt alle Logs die nicht mit dem WvW zu tun haben
+                        }
+                        if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                        {
+                            //Muss noch ausimplementiert werden
+                            //wvwlogs.Add(info.FullName);
+                        }
+                    }
+                }
+            }
+        }
         private void BefuelleListe()
         {
             label4.Text = "0%";
             progressBarUpload.Value = 0;
             Update();
 
-            var files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.zevtc", SearchOption.AllDirectories);
-            if(files.Count() == 0)
-            {
-                files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.evtc", SearchOption.AllDirectories);
-            }
 
             List<LogInfos> zaehelendeLogs = new List<LogInfos>();
             zaehelendeLogs.Clear();
 
             List<LogInfos> wvwlogs = new List<LogInfos>();
             wvwlogs.Clear();
-            
-            txtBoxUploadedLogs.Clear();
-            foreach (string file in files)
-            {
-                var info = new FileInfo(file);
-                if(combBoxContent.SelectedIndex == 0)
-                {
-                    //Nur PvE Logs
-                    if (info.DirectoryName.Contains("WvW"))
-                    {
-                        continue; //Überspringt alle Einträge, welche im WvW Pfad liegen
-                    }
-                    
-                    if(info.Length <= int.Parse(txtBoxMaxLogSize.Text))
-                    {
-                        continue; //überspringt alle Einträge, deren Größe kleiner als 100 KB sind
-                    }
-                    if(info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
-                    {
-                        //Das Erstelldatum muss im Zeitraum liegen
-                        LogInfos loginfos = new LogInfos();
 
-                        if (radioButton3.Checked)
-                        {
-                            loginfos.boss = info.DirectoryName;
-                        }
-                        if (radioButton4.Checked)
-                        {
-                            loginfos.boss = Path.GetFileName(Path.GetDirectoryName(info.DirectoryName));
-                        }
-                        
-                        loginfos.erstellDatum = info.CreationTime;
-                        loginfos.pfad = info.FullName;
-                        
-                        zaehelendeLogs.Add(loginfos); //Fügt der Liste hinzu
-                    }
-                }
-                else
+            bool neuenWeg = false;
+
+            if (neuenWeg)
+            {
+                ListeAndersBefuellen(ref zaehelendeLogs);
+            }
+            else
+            {
+                var files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.zevtc", SearchOption.AllDirectories);
+                if (files.Count() == 0)
                 {
-                    if (!info.DirectoryName.Contains("WvW"))
+                    files = Directory.GetFiles(txtBoxLogOrdner.Text, "*.evtc", SearchOption.AllDirectories);
+                }
+
+                foreach (string file in files)
+                {
+                    var info = new FileInfo(file);
+                    if (combBoxContent.SelectedIndex == 0)
                     {
-                        continue; //Überspringt alle Logs die nicht mit dem WvW zu tun haben
+                        //Nur PvE Logs
+                        if (info.DirectoryName.Contains("WvW"))
+                        {
+                            continue; //Überspringt alle Einträge, welche im WvW Pfad liegen
+                        }
+
+                        if (info.Length <= int.Parse(txtBoxMaxLogSize.Text))
+                        {
+                            continue; //überspringt alle Einträge, deren Größe kleiner als 100 KB sind
+                        }
+                        if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                        {
+                            //Das Erstelldatum muss im Zeitraum liegen
+                            LogInfos loginfos = new LogInfos();
+                            string bossi = info.DirectoryName;
+                            //loginfos.boss = Bossordner(ref bossi);
+
+                            if (radioButton3.Checked)
+                            {
+                                loginfos.boss = info.DirectoryName;
+                            }
+                            if (radioButton4.Checked)
+                            {
+                                loginfos.boss = Path.GetFileName(Path.GetDirectoryName(info.DirectoryName));
+                            }
+
+                            loginfos.erstellDatum = info.CreationTime;
+                            loginfos.pfad = info.FullName;
+
+                            zaehelendeLogs.Add(loginfos); //Fügt der Liste hinzu
+                        }
                     }
-                    if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                    else
                     {
-                        //Muss noch ausimplementiert werden
-                        //wvwlogs.Add(info.FullName);
+                        if (!info.DirectoryName.Contains("WvW"))
+                        {
+                            continue; //Überspringt alle Logs die nicht mit dem WvW zu tun haben
+                        }
+                        if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                        {
+                            //Muss noch ausimplementiert werden
+                            //wvwlogs.Add(info.FullName);
+                        }
                     }
                 }
             }
+            
+            /*
+            foreach (var item in zaehelendeLogs)
+            {
+                MessageBox.Show("Boss: "+item.boss);
+            }
+            */
+            
+            
+            
+            MessageBox.Show("Anzahl Logs "+zaehelendeLogs.Count);
 
             //Falls WvW ausgewählt wurde:
             if(combBoxContent.SelectedIndex == 1)
@@ -387,48 +487,60 @@ namespace LogUploader4Glenna
 
         }
 
-        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        private void UseDifferentListsForUpload(ref List<LogInfos2> liste)
         {
-            BefuelleListe();
-            double prozentualabgeschlossen = 0;
+            //Aufsplitten
+            List<LogInfos2> liste1 = new List<LogInfos2>();
+            List<LogInfos2> liste2 = new List<LogInfos2>();
+            List<LogInfos2> liste3 = new List<LogInfos2>();
+            List<LogInfos2> liste4 = new List<LogInfos2>();
 
-            if (radioButton1.Checked) //Keine Logs doppelt
+            //while()
+            int anzahl = 0;
+            anzahl = liste.Count()/4;
+
+            for (int i = 0; i < anzahl; i++)
             {
-                for (int i = listeLogTries.Count-1; i >= 0; i--)
-                {
-                    if (LineExistsInFile(@Directory.GetCurrentDirectory() + "/Upgeloaded/logs.txt", listeLogTries[i].pfad))
-                    {
-                        listeLogTries.RemoveAt(i);
-                    }
-                }
+                liste1.Add(liste[i]);
             }
+            for (int i = anzahl; i < liste1.Count()+anzahl; i++)
+            {
+                liste2.Add(liste[i]);
+            }
+            for (int i = anzahl+liste2.Count(); i < liste1.Count()+liste2.Count() + anzahl; i++)
+            {
+                liste3.Add(liste[i]);
+            }
+            for (int i = anzahl+liste2.Count()+liste3.Count(); i < liste.Count(); i++)
+            {
+                liste4.Add(liste[i]);
+            }
+            //liste.Clear();
 
             while (true)
             {
-                if (!backgroundWorker3.IsBusy & listeLogTries.Count > 0)
+                if (!backgroundWorker3.IsBusy & liste1.Count > 0)
                 {
-                    Console.WriteLine("Vorher " + listeLogTries.Count);
-                    backgroundWorker3.RunWorkerAsync(listeLogTries[0]);
-                    listeLogTries.RemoveAt(0);
-                    Console.WriteLine("Nachher " + listeLogTries.Count);
+                    backgroundWorker3.RunWorkerAsync(liste1[0]);
+                    liste1.RemoveAt(0);
                     //MessageBox.Show("Upload abgeschlossen");
                 }
 
-                if (!backgroundWorker4.IsBusy & listeLogTries.Count > 0)
+                if (!backgroundWorker4.IsBusy & liste2.Count > 0)
                 {
-                    backgroundWorker4.RunWorkerAsync(listeLogTries[0]);
-                    listeLogTries.RemoveAt(0);
+                    backgroundWorker4.RunWorkerAsync(liste2[0]);
+                    liste2.RemoveAt(0);
                 }
 
-                if (!backgroundWorker5.IsBusy & listeLogTries.Count > 0)
+                if (!backgroundWorker5.IsBusy & liste3.Count >0 )
                 {
-                    backgroundWorker5.RunWorkerAsync(listeLogTries[0]);
-                    listeLogTries.RemoveAt(0);
+                    backgroundWorker5.RunWorkerAsync(liste3[0]);
+                    liste3.RemoveAt(0);
                 }
-                if (!backgroundWorker6.IsBusy & listeLogTries.Count > 0)
+                if (!backgroundWorker6.IsBusy & liste4.Count > 0)
                 {
-                    backgroundWorker6.RunWorkerAsync(listeLogTries[0]);
-                    listeLogTries.RemoveAt(0);
+                    backgroundWorker6.RunWorkerAsync(liste4[0]);
+                    liste4.RemoveAt(0);
                 }
                 try
                 {
@@ -441,9 +553,86 @@ namespace LogUploader4Glenna
                 //Console.WriteLine("listelogtries noch so viel "+listeLogTries.Count);
                 //progressBar1.Value = (int)prozentualabgeschlossen;
                 //this.Update();
-                if (!backgroundWorker3.IsBusy & !backgroundWorker4.IsBusy & !backgroundWorker5.IsBusy & !backgroundWorker6.IsBusy & listeLogTries.Count == 0)
+                if (!backgroundWorker3.IsBusy & !backgroundWorker4.IsBusy & !backgroundWorker5.IsBusy & !backgroundWorker6.IsBusy)
                     break;
             }
+
+        }
+
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BefuelleListe();
+            double prozentualabgeschlossen = 0.0;
+
+            if (radioButton1.Checked) //Keine Logs doppelt
+            {
+                for (int i = listeLogTries.Count-1; i >= 0; i--)
+                {
+                    if (LineExistsInFile(@Directory.GetCurrentDirectory() + "/Upgeloaded/logs.txt", listeLogTries[i].pfad))
+                    {
+                        listeLogTries.RemoveAt(i);
+                    }
+                }
+            }
+
+            bool useOtherMethod = false;
+
+            if(useOtherMethod){
+                UseDifferentListsForUpload(ref listeLogTries);
+            }
+            else
+            {
+                while (true)
+                {
+                    if (!backgroundWorker3.IsBusy & listeLogTries.Count > 0)
+                    {
+                        Console.WriteLine("Vorher " + listeLogTries.Count);
+                        backgroundWorker3.RunWorkerAsync(listeLogTries[0]);
+                        listeLogTries.RemoveAt(0);
+                        Console.WriteLine("Nachher " + listeLogTries.Count);
+                        //MessageBox.Show("Upload abgeschlossen");
+                    }
+
+                    if (!backgroundWorker4.IsBusy & listeLogTries.Count > 0)
+                    {
+                        Console.WriteLine("Vorher " + listeLogTries.Count);
+                        backgroundWorker4.RunWorkerAsync(listeLogTries[0]);
+                        listeLogTries.RemoveAt(0);
+                        Console.WriteLine("Nachher " + listeLogTries.Count);
+                    }
+
+                    if (!backgroundWorker5.IsBusy & listeLogTries.Count > 0)
+                    {
+                        Console.WriteLine("Vorher " + listeLogTries.Count);
+                        backgroundWorker5.RunWorkerAsync(listeLogTries[0]);
+                        listeLogTries.RemoveAt(0);
+                        Console.WriteLine("Nachher " + listeLogTries.Count);
+                    }
+                    if (!backgroundWorker6.IsBusy & listeLogTries.Count > 0)
+                    {
+                        Console.WriteLine("Vorher " + listeLogTries.Count);
+                        backgroundWorker6.RunWorkerAsync(listeLogTries[0]);
+                        listeLogTries.RemoveAt(0);
+                        Console.WriteLine("Nachher " + listeLogTries.Count);
+                    }
+                    try
+                    {
+                        Thread.Sleep(50);
+                    }
+                    catch (Exception Error)
+                    {
+                        Console.WriteLine(Error.ToString());
+                    }
+                    //Console.WriteLine("listelogtries noch so viel "+listeLogTries.Count);
+                    //progressBar1.Value = (int)prozentualabgeschlossen;
+                    //this.Update();
+                    if (!backgroundWorker3.IsBusy & !backgroundWorker4.IsBusy & !backgroundWorker5.IsBusy & !backgroundWorker6.IsBusy & listeLogTries.Count == 0)
+                        break;
+                }
+            }
+            
+
+            
 
             label4.Text = "100";
             progressBarUpload.Value = 100;
@@ -599,7 +788,7 @@ namespace LogUploader4Glenna
 
         private void nachUpdatesPrüfenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //ggfs. später versuchen über md5 hash zu ermitteln
+                //ggfs. später versuchen über md5 hash zu ermitteln
             
             //Logik:
             string aktuelleVersion = ""; //Muss ausgelesen werden aus aktueller Datei
@@ -610,7 +799,6 @@ namespace LogUploader4Glenna
 
             string versionAktuell1 = "";
             versionAktuell1 = root.FirstChild.InnerXml;
-            MessageBox.Show(""+ versionAktuell1);
             aktuelleVersion = versionAktuell1;
 
             string neueVersion = holeNeueVersion();
@@ -618,6 +806,7 @@ namespace LogUploader4Glenna
             if(neueVersion != aktuelleVersion)
             {
                 MessageBox.Show("Es gibt eine neue Version.\nNeu: "+neueVersion+"\nAktuelle Version: "+aktuelleVersion);
+                //Ggfs. später eine Möglichkeit anbieten zu Downloaden und dauerhaft zu speichern.
             }
             else
             {
