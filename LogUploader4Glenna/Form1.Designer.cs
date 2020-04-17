@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -57,6 +58,9 @@
             this.nachUpdatesPrüfenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
             this.txtBoxMaxLogSize = new System.Windows.Forms.TextBox();
+            this.backWorkerWatching = new System.ComponentModel.BackgroundWorker();
+            this.btnUploadLastLog = new System.Windows.Forms.Button();
+            this.toolTipUploadLastLog = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -142,6 +146,7 @@
             this.btnUploadMultipleThreads.TabIndex = 8;
             this.btnUploadMultipleThreads.Text = "Lade Logs hoch mehrere Threads";
             this.btnUploadMultipleThreads.UseVisualStyleBackColor = true;
+            this.btnUploadMultipleThreads.Visible = false;
             this.btnUploadMultipleThreads.Click += new System.EventHandler(this.btnUploadMultipleThreads_Click);
             // 
             // btnWatchDirectory
@@ -250,22 +255,22 @@
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
-            this.radioButton4.Checked = true;
             this.radioButton4.Location = new System.Drawing.Point(1, 43);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(130, 17);
             this.radioButton4.TabIndex = 1;
-            this.radioButton4.TabStop = true;
             this.radioButton4.Text = "Unterordner Charakter";
             this.radioButton4.UseVisualStyleBackColor = true;
             // 
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
+            this.radioButton3.Checked = true;
             this.radioButton3.Location = new System.Drawing.Point(1, 20);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(153, 17);
             this.radioButton3.TabIndex = 0;
+            this.radioButton3.TabStop = true;
             this.radioButton3.Text = "Nur nach Bossen aufgeteilt";
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
@@ -313,11 +318,26 @@
             this.txtBoxMaxLogSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtBoxMaxLogSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBoxMaxLogSize_KeyPress);
             // 
+            // backWorkerWatching
+            // 
+            this.backWorkerWatching.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backWorkerWatching_DoWork);
+            // 
+            // btnUploadLastLog
+            // 
+            this.btnUploadLastLog.Location = new System.Drawing.Point(536, 425);
+            this.btnUploadLastLog.Name = "btnUploadLastLog";
+            this.btnUploadLastLog.Size = new System.Drawing.Size(170, 23);
+            this.btnUploadLastLog.TabIndex = 19;
+            this.btnUploadLastLog.Text = "Lade letzten Log hoch";
+            this.btnUploadLastLog.UseVisualStyleBackColor = true;
+            this.btnUploadLastLog.Click += new System.EventHandler(this.btnUploadLastLog_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(733, 459);
+            this.Controls.Add(this.btnUploadLastLog);
             this.Controls.Add(this.txtBoxMaxLogSize);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
@@ -381,6 +401,9 @@
         private System.Windows.Forms.ToolStripMenuItem nachUpdatesPrüfenToolStripMenuItem;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtBoxMaxLogSize;
+        private System.ComponentModel.BackgroundWorker backWorkerWatching;
+        private System.Windows.Forms.Button btnUploadLastLog;
+        private System.Windows.Forms.ToolTip toolTipUploadLastLog;
     }
 }
 

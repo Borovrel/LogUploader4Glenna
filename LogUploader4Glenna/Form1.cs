@@ -50,6 +50,8 @@ namespace LogUploader4Glenna
 
             ErstelleVerzeichnisse();
             combBoxContent.SelectedIndex = 0;
+
+            toolTipUploadLastLog.SetToolTip(btnUploadLastLog, "Lädt ausschließlich den letzten gefunden PvE Log hoch. Unabhängig von der Einstellung, ob der Log nicht doppelt hochgeladen werden soll.");
             
         }
         /*
@@ -717,7 +719,8 @@ namespace LogUploader4Glenna
             ordnerUeberwachungLaueft = !ordnerUeberwachungLaueft;
             fsW = new FileSystemWatcher();
             fsW.Path = txtBoxLogOrdner.Text;
-            fsW.Filter = "*.evtc";
+            //fsW.Filter = "*.evtc|*.zevtc";
+            fsW.Filter = "*.zevtc";
 
             fsW.IncludeSubdirectories = true;
 
@@ -743,7 +746,7 @@ namespace LogUploader4Glenna
         // Handler für alle Events
         void fsW_Renamed(object sender, RenamedEventArgs e)
         {
-            //MessageBox.Show("Umbenannt: " + e.Name);
+            MessageBox.Show("Umbenannt: " + e.Name);
         }
 
         void fsW_Changed(object sender, FileSystemEventArgs e)
@@ -760,8 +763,9 @@ namespace LogUploader4Glenna
         {
             if (ordnerUeberwachungLaueft)
             {
-                //MessageBox.Show("Log: "+txtBoxLogOrdner.Text+e.Name);
+                MessageBox.Show("Log: "+txtBoxLogOrdner.Text+e.Name);
                 txtBoxUploadedLogs.AppendText(UploadLog(txtBoxLogOrdner.Text+e.Name));
+                
             }
         }
 
@@ -855,6 +859,29 @@ namespace LogUploader4Glenna
         private void txtBoxMaxLogSize_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+        private void backWorkerWatching_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
+
+        private void btnUploadLastLog_Click(object sender, EventArgs e)
+        {
+            List<LogInfos> zaehelendeLogs = new List<LogInfos>();
+            zaehelendeLogs.Clear();
+
+            ListeAndersBefuellen(ref zaehelendeLogs);
+            //MessageBox.Show("Anzahl "+zaehelendeLogs.Count);
+            List<LogInfos> sortedList = zaehelendeLogs.OrderByDescending(o => o.erstellDatum).ToList();
+            if (sortedList.Count > 0)
+            {
+                //MessageBox.Show(sortedList[0].boss+" mit Datum "+sortedList[0].erstellDatum);
+                txtBoxUploadedLogs.AppendText(UploadLog(sortedList[0].pfad) + "\r\n");
+                MessageBox.Show("Der letzte Log wurde hochgeladen. (Ohne benötigte Versuche!)");
+            }
+                
+
         }
     }
 }
