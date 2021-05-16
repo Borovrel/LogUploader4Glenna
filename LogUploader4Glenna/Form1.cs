@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,7 +53,8 @@ namespace LogUploader4Glenna
             combBoxContent.SelectedIndex = 0;
 
             toolTipUploadLastLog.SetToolTip(btnUploadLastLog, "Lädt ausschließlich den letzten gefunden PvE Log hoch. Unabhängig von der Einstellung, ob der Log nicht doppelt hochgeladen werden soll.");
-            
+
+            textBox1.Text = txtBoxLogOrdner.Text;
         }
         /*
         private string Bossordner(ref string Ordernpfad)
@@ -120,15 +122,66 @@ namespace LogUploader4Glenna
                     }
                     else
                     {
-                        if (item.Contains("WvW"))
+                        switch (combBoxContent.SelectedItem)
                         {
-                            continue; //Überspringt alle Logs die nicht mit dem WvW zu tun haben
+                            case "PvE Raidbosse":
+                                if(item.Contains("Golem") || item.Contains("WvW")|| item.Contains("Siax") || item.Contains("Mama") || item.Contains("Enso") || item.Contains("Skorvald") || item.Contains("Artsariiv") || item.Contains("Arkk"))
+                                {
+                                    continue;
+                                }
+                                break;
+                            case "PvE Übungsbereich":
+                                if (!item.Contains("Golem"))
+                                {
+                                    continue;
+                                }
+                                break;
+
+                            case "WvW":
+                                if (!item.Contains("WvW"))
+                                {
+                                    continue;
+                                }
+                                break;
+
+                            case "Fraktale":
+                                if (!item.Contains("Siax") || !item.Contains("Mama") || !item.Contains("Enso") || !item.Contains("Skorvald") || !item.Contains("Artsariiv") || !item.Contains("Arkk"))
+                                {
+                                    continue;
+                                }
+                                break;
+                            default:
+                                //MessageBox.Show("Unerwartet");
+                                break;
+                        }
+                        if (info.Length <= int.Parse(txtBoxMaxLogSize.Text))
+                        {
+                            continue; //überspringt alle Einträge, deren Größe kleiner als 100 KB sind
                         }
                         if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
                         {
-                            //Muss noch ausimplementiert werden
-                            //wvwlogs.Add(info.FullName);
+                            //Das Erstelldatum muss im Zeitraum liegen
+                            LogInfos loginfos = new LogInfos();
+                            loginfos.boss = item;
+
+                            loginfos.erstellDatum = info.CreationTime;
+                            loginfos.pfad = info.FullName;
+
+                            listeDerLogs.Add(loginfos); //Fügt der Liste hinzu
                         }
+                        //if (!item.Contains("WvW"))
+                        //{
+                        //    continue; //Überspringt alle Logs die nicht mit dem WvW zu tun haben
+                        //}
+                        //if (info.CreationTime > DateTime.Today.AddDays(-(int.Parse(txtBoxZeitraum.Text))))
+                        //{
+                        //    //Muss noch ausimplementiert werden
+                        //    //wvwlogs.Add(info.FullName);
+                        //}
+                        //if(combBoxContent.SelectedItem == "PvE Übungsbereich")
+                        //{
+                        //
+                        //}
                     }
                 }
             }
@@ -211,20 +264,20 @@ namespace LogUploader4Glenna
                     }
                 }
             }
-            
+
             /*
             foreach (var item in zaehelendeLogs)
             {
                 MessageBox.Show("Boss: "+item.boss);
             }
             */
-            
-            
-            
-            MessageBox.Show("Anzahl Logs "+zaehelendeLogs.Count);
+
+
+
+            //MessageBox.Show("Anzahl Logs " + zaehelendeLogs.Count);
 
             //Falls WvW ausgewählt wurde:
-            if(combBoxContent.SelectedIndex == 1)
+            if (combBoxContent.SelectedIndex == 1)
             {
                 foreach (var item in wvwlogs)
                 {
@@ -238,7 +291,7 @@ namespace LogUploader4Glenna
             string vorherigerBoss = "";
             int durchlauf = 0;
             LogInfos2 logInfos2 = new LogInfos2();
-            if(zaehelendeLogs.Count > 0)
+            if (zaehelendeLogs.Count > 0)
             {
                 logInfos2.boss = zaehelendeLogs[0].boss;
             }
@@ -251,18 +304,18 @@ namespace LogUploader4Glenna
             foreach (var item in zaehelendeLogs)
             {
                 durchlauf += 1;
-                if(vorherigerBoss == "")
+                if (vorherigerBoss == "")
                 {
                     vorherigerBoss = item.boss;
                 }
-                if(vorherigerBoss == item.boss)
+                if (vorherigerBoss == item.boss)
                 {
                     bossversuch += 1;
 
                     logInfos2.versuch = bossversuch;
                     logInfos2.pfad = item.pfad;
                 }
-                if(vorherigerBoss != item.boss)
+                if (vorherigerBoss != item.boss)
                 {
                     bossversuch = 1;
                     vorherigerBoss = item.boss;
@@ -274,9 +327,9 @@ namespace LogUploader4Glenna
                 }
 
                 listeLogTries.Add(logInfos2);
-                Console.WriteLine("Gesamtanzahl: "+zaehelendeLogs.Count);
+                Console.WriteLine("Gesamtanzahl: " + zaehelendeLogs.Count);
             }
-
+            #endregion
             #region Entferne die vorherigen Versuche
             string vorherigerBoss2 = "";
             List<LogInfos2> blacklist = new List<LogInfos2>();
@@ -318,12 +371,12 @@ namespace LogUploader4Glenna
 
             listeLogTriesCount = listeLogTries.Count;
             prozentualerAnteilProLog = 0.0;
-            if(listeLogTriesCount > 0)
+            if (listeLogTriesCount > 0)
             {
                 prozentualerAnteilProLog = 100 / listeLogTriesCount;
             }
-                
-            #endregion //PVE
+
+            //PVE
         }
 
         private void ErstelleVerzeichnisse()
@@ -403,6 +456,141 @@ namespace LogUploader4Glenna
 
         }
 
+        private void UploadV3()
+        {
+            BefuelleListe();
+            double prozentualabgeschlossen = 0;
+            /*
+             double prozentualabgeschlossen = 0;
+            foreach (var log in listeLogTries)
+            {
+
+                Console.WriteLine("Boss: " + log.boss + " und Versuch: " + log.versuch + " und Pfad: " + log.pfad);
+
+                txtBoxUploadedLogs.AppendText(UploadLog(log.pfad) + " " + log.versuch + "\r\n");
+                prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                label4.Text = prozentualabgeschlossen + "%";
+                progressBarUpload.Value = (int)prozentualabgeschlossen;
+                Console.WriteLine("So viel: " + listeLogTries.Count);
+                Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
+                Console.WriteLine(prozentualabgeschlossen + "%");
+            }
+
+            label4.Text = "100%";
+            progressBarUpload.Value = 100;
+            Update();
+            MessageBox.Show("Alle Logs wurden hochgeladen");
+             */
+            if (listeLogTriesCount >= 4)
+            {
+                //Mindestens 4 Logs
+                List<LogInfos2> myFirstList = new List<LogInfos2>();
+                #region Listen befüllen
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 0)
+                    {
+                        myFirstList.Add(listeLogTries[i]);
+                    }
+                }
+                List<LogInfos2> mySectList = new List<LogInfos2>();
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 1)
+                    {
+                        mySectList.Add(listeLogTries[i]);
+                    }
+                }
+                List<LogInfos2> myThirdList = new List<LogInfos2>();
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 2)
+                    {
+                        myThirdList.Add(listeLogTries[i]);
+                    }
+                }
+                List<LogInfos2> myFourthList = new List<LogInfos2>();
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 3)
+                    {
+                        myFourthList.Add(listeLogTries[i]);
+                    }
+                }
+                #endregion
+                Thread firstThread = new Thread(delegate () { UploadV3_2(myFirstList); });
+                firstThread.Start();
+                Thread secThread = new Thread(delegate () { UploadV3_2(mySectList); });
+                secThread.Start();
+                Thread thirdThread = new Thread(delegate () { UploadV3_2(myThirdList); });
+                thirdThread.Start();
+                Thread fourthThread = new Thread(delegate () { UploadV3_2(myFourthList); });
+                fourthThread.Start();
+            }
+            if ((4 > listeLogTriesCount) && (listeLogTriesCount >= 2))
+            {
+                //Maximal 3 Logs
+                List<LogInfos2> myFirstList = new List<LogInfos2>();
+                #region Listen befüllen
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 0)
+                    {
+                        myFirstList.Add(listeLogTries[i]);
+                    }
+                }
+                List<LogInfos2> mySectList = new List<LogInfos2>();
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 1)
+                    {
+                        mySectList.Add(listeLogTries[i]);
+                    }
+                }
+                List<LogInfos2> myThirdList = new List<LogInfos2>();
+                for (int i = 0; i < listeLogTriesCount; i++)
+                {
+                    if (i % 4 == 2)
+                    {
+                        myThirdList.Add(listeLogTries[i]);
+                    }
+                }
+                #endregion
+                Thread firstThread = new Thread(delegate () { UploadV3_2(myFirstList); });
+                firstThread.Start();
+                Thread secThread = new Thread(delegate () { UploadV3_2(mySectList); });
+                secThread.Start();
+                Thread thirdThread = new Thread(delegate () { UploadV3_2(myThirdList); });
+                thirdThread.Start();
+            }
+        }
+
+        private void UploadV3_2(List<LogInfos2> logs)
+        {
+            foreach (LogInfos2 item in logs)
+            {
+                if (txtBoxUploadedLogs.InvokeRequired)
+                {
+                    MethodInvoker mi = delegate
+                    {
+                        txtBoxUploadedLogs.AppendText(UploadLog(item.pfad) + " " + item.versuch + "\r\n");
+                        prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                        label4.Text = prozentualabgeschlossen + "%";
+                        progressBarUpload.Value = (int)prozentualabgeschlossen;
+                    };
+                    Invoke(mi);
+                }
+                else
+                {
+                    txtBoxUploadedLogs.AppendText(UploadLog(item.pfad) + " " + item.versuch + "\r\n");
+                    prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                    label4.Text = prozentualabgeschlossen + "%";
+                    progressBarUpload.Value = (int)prozentualabgeschlossen;
+                }
+            }
+            //prozentualerAnteilProLog
+        }
+
         private string UploadLog(string filepfad)
         {
             //filepfad angeben: bsp: C:\Users\Feex\Documents\Guild Wars 2\addons\arcdps\arcdps.cbtlogs\Tal-Wächter\Zhoemton\20191208-191004.zevtc
@@ -414,6 +602,20 @@ namespace LogUploader4Glenna
             var response = client.Post(request);
             var content = response.Content; //raw content as string
 
+
+            ReportAusgabe reportAusgabe = JsonConvert.DeserializeObject<ReportAusgabe>(content);
+            if(combBoxContent.SelectedItem == "PvE Übungsbereich")
+            {
+
+                return reportAusgabe.permalink;
+            }
+            else
+            {
+                if (reportAusgabe.encounter.boss.Contains("Kitty Golem"))
+                {
+                    return "";
+                }
+            }
             string loglink = "";
             loglink = content;
 
@@ -499,21 +701,21 @@ namespace LogUploader4Glenna
 
             //while()
             int anzahl = 0;
-            anzahl = liste.Count()/4;
+            anzahl = liste.Count() / 4;
 
             for (int i = 0; i < anzahl; i++)
             {
                 liste1.Add(liste[i]);
             }
-            for (int i = anzahl; i < liste1.Count()+anzahl; i++)
+            for (int i = anzahl; i < liste1.Count() + anzahl; i++)
             {
                 liste2.Add(liste[i]);
             }
-            for (int i = anzahl+liste2.Count(); i < liste1.Count()+liste2.Count() + anzahl; i++)
+            for (int i = anzahl + liste2.Count(); i < liste1.Count() + liste2.Count() + anzahl; i++)
             {
                 liste3.Add(liste[i]);
             }
-            for (int i = anzahl+liste2.Count()+liste3.Count(); i < liste.Count(); i++)
+            for (int i = anzahl + liste2.Count() + liste3.Count(); i < liste.Count(); i++)
             {
                 liste4.Add(liste[i]);
             }
@@ -534,7 +736,7 @@ namespace LogUploader4Glenna
                     liste2.RemoveAt(0);
                 }
 
-                if (!backgroundWorker5.IsBusy & liste3.Count >0 )
+                if (!backgroundWorker5.IsBusy & liste3.Count > 0)
                 {
                     backgroundWorker5.RunWorkerAsync(liste3[0]);
                     liste3.RemoveAt(0);
@@ -568,7 +770,7 @@ namespace LogUploader4Glenna
 
             if (radioButton1.Checked) //Keine Logs doppelt
             {
-                for (int i = listeLogTries.Count-1; i >= 0; i--)
+                for (int i = listeLogTries.Count - 1; i >= 0; i--)
                 {
                     if (LineExistsInFile(@Directory.GetCurrentDirectory() + "/Upgeloaded/logs.txt", listeLogTries[i].pfad))
                     {
@@ -579,7 +781,8 @@ namespace LogUploader4Glenna
 
             bool useOtherMethod = false;
 
-            if(useOtherMethod){
+            if (useOtherMethod)
+            {
                 UseDifferentListsForUpload(ref listeLogTries);
             }
             else
@@ -632,9 +835,9 @@ namespace LogUploader4Glenna
                         break;
                 }
             }
-            
 
-            
+
+
 
             label4.Text = "100";
             progressBarUpload.Value = 100;
@@ -687,7 +890,7 @@ namespace LogUploader4Glenna
         private void backgroundWorker3_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             abgearbeitet = prozentualerAnteilProLog + abgearbeitet;
-            label4.Text = abgearbeitet +"%";
+            label4.Text = abgearbeitet + "%";
             progressBarUpload.Value = (int)abgearbeitet;
         }
 
@@ -763,9 +966,9 @@ namespace LogUploader4Glenna
         {
             if (ordnerUeberwachungLaueft)
             {
-                MessageBox.Show("Log: "+txtBoxLogOrdner.Text+e.Name);
-                txtBoxUploadedLogs.AppendText(UploadLog(txtBoxLogOrdner.Text+e.Name));
-                
+                MessageBox.Show("Log: " + txtBoxLogOrdner.Text + e.Name);
+                txtBoxUploadedLogs.AppendText(UploadLog(txtBoxLogOrdner.Text + e.Name));
+
             }
         }
 
@@ -792,8 +995,8 @@ namespace LogUploader4Glenna
 
         private void nachUpdatesPrüfenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-                //ggfs. später versuchen über md5 hash zu ermitteln
-            
+            //ggfs. später versuchen über md5 hash zu ermitteln
+
             //Logik:
             string aktuelleVersion = ""; //Muss ausgelesen werden aus aktueller Datei
             XmlDocument doc = new XmlDocument();
@@ -807,9 +1010,9 @@ namespace LogUploader4Glenna
 
             string neueVersion = holeNeueVersion();
 
-            if(neueVersion != aktuelleVersion)
+            if (neueVersion != aktuelleVersion)
             {
-                MessageBox.Show("Es gibt eine neue Version.\nNeu: "+neueVersion+"\nAktuelle Version: "+aktuelleVersion);
+                MessageBox.Show("Es gibt eine neue Version.\nNeu: " + neueVersion + "\nAktuelle Version: " + aktuelleVersion);
                 //Ggfs. später eine Möglichkeit anbieten zu Downloaden und dauerhaft zu speichern.
             }
             else
@@ -830,11 +1033,11 @@ namespace LogUploader4Glenna
 
             #region Vergleich
             string zipPath = "Uploader4Glenna.zip";
-            string ExtractPath = Directory.GetCurrentDirectory()+"/Uploader4GlennaExtract";
+            string ExtractPath = Directory.GetCurrentDirectory() + "/Uploader4GlennaExtract";
             ZipFile.ExtractToDirectory(zipPath, ExtractPath);
 
             XmlDocument doc = new XmlDocument();
-            doc.Load(Directory.GetCurrentDirectory()+ "/Uploader4GlennaExtract/LogUploader4Glenna-master/LogUploader4Glenna/Version.xml");
+            doc.Load(Directory.GetCurrentDirectory() + "/Uploader4GlennaExtract/LogUploader4Glenna-master/LogUploader4Glenna/Version.xml");
             XmlElement root = doc.DocumentElement;
 
             neueVersion = root.FirstChild.InnerXml;
@@ -843,11 +1046,12 @@ namespace LogUploader4Glenna
             #region Löschen
             try
             {
-                File.Delete(Directory.GetCurrentDirectory()+ "\\Uploader4Glenna.zip");
-                Directory.Delete(ExtractPath,true);
-            }catch(Exception Error)
+                File.Delete(Directory.GetCurrentDirectory() + "\\Uploader4Glenna.zip");
+                Directory.Delete(ExtractPath, true);
+            }
+            catch (Exception Error)
             {
-                MessageBox.Show("Beim Löschen ist etwas schiefgelaufen: "+Error);
+                MessageBox.Show("Beim Löschen ist etwas schiefgelaufen: " + Error);
             }
             #endregion
 
@@ -880,8 +1084,363 @@ namespace LogUploader4Glenna
                 txtBoxUploadedLogs.AppendText(UploadLog(sortedList[0].pfad) + "\r\n");
                 MessageBox.Show("Der letzte Log wurde hochgeladen. (Ohne benötigte Versuche!)");
             }
-                
+
 
         }
-    }
+
+        private void ChangeLayoutPanel(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            txtBoxLogOrdner.Text = textBox1.Text;
+        }
+
+        private void txtBoxLogOrdner_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = txtBoxLogOrdner.Text;
+        }
+
+        private void btnUploadPanel2_Click(object sender, EventArgs e)
+        {
+            BefuelleListe();
+            //if(checkBox1)
+            //checkbox1-30
+            if (listeLogTries.Count == 0)
+                return;
+
+            LogInfos2 loginfo2 = new LogInfos2();
+
+            #region Wing 1-4
+            if (!cBoxVG.Checked)
+            {
+                //Muss später noch verbessert werden
+                for (int i = 0; i < listeLogTries.Count; i++)
+                {
+                    if (listeLogTries[i].boss.Contains("Tal-Wächter"))
+                    {
+                        listeLogTries.RemoveAt(i);
+                        i--;
+                    }
+
+                }
+                //if(listeLogTries.Find(t => t.boss == "Tal-Wächter").FirstOrDefault())
+                //{
+                //
+                //}
+                //if(listeLogTries.Remove(new LogInfos2())
+            }
+            if (!cBoxGorse.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Gorseval der Facettenreiche");
+            }
+            if (!cBoxSab.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Sabetha die Saboteurin");
+            }
+            if (!cBoxSloth.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Faultierion");
+            }
+            if (!cBoxTrio.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Berg");
+            }
+            if (!cBoxMatt.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Matthias Gabrel");
+            }
+            if (!cBoxKC.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Festenkonstrukt");
+            }
+            if (!cBoxTC.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Spukende Statue");
+            }
+            if (!cBoxXera.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Xera");
+            }
+            if (!cBoxCairn.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Cairn der Unbeugsame");
+            }
+            if (!cBoxMo.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Mursaat-Aufseher");
+            }
+            if (!cBoxSam.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Samarog");
+            }
+            if (!cBoxDeimos.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Deimos");
+            }
+            #endregion
+            #region Wing 5-7
+            if (!cBoxSH.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Seelenloser Schrecken");
+            }
+            if (!cBoxRiver.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Desmina");
+            }
+            if (!cBoxKing.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Bezwungener König");
+            }
+            if (!cBoxEater.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Seelenverzehrer");
+            }
+            if (!cBoxEyes.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Auge des Schicksals");
+                Panel2SubRoutineBosseFiltern("Auge des Urteils");
+            }
+            if (!cBoxDhuum.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Dhuum");
+            }
+            if (!cBoxCA.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Beschworene Verschmelzung");
+            }
+            if (!cBoxTwins.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Nikare");
+            }
+            if (!cBoxQadim.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Qadim");
+            }
+            if (!cBoxAdina.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Kardinal Adina");
+            }
+            if (!cBoxSabir.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Kardinal Sabir");
+            }
+            if (!cBoxQadim2.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Qadim der Unvergleichliche");
+            }
+            #endregion
+            #region Angriffsmissionen
+            if (!cBoxBoneskinner.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Knochenhäuter");
+            }
+            if (!cBoxIC.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Eisbrut-Konstrukt");
+            }
+            if (!cBoxFraenir.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Fraenir Jormags");
+            }
+            if (!cBoxFallen.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Klaue der Gefallenen"); //Kann mich hier auch irren
+            }
+            if (!cBoxWhisper.Checked)
+            {
+                Panel2SubRoutineBosseFiltern("Geflüster des Jormag");
+            }
+            #endregion
+
+            MessageBox.Show("Übrig: " + listeLogTries.Count.ToString());
+
+            double prozentualabgeschlossen = 0;
+
+
+            #region
+
+            ListeLogsForSecondThread = listeLogTries;
+
+            //if (ListeLogsForSecondThread.Count % 2 == 0)
+            //{
+            //    //Es bleibt kein Rest übrig
+            //    ersterTeil = (ListeLogsForSecondThread.Count / 2);
+            //}
+            //else
+            //{
+            //    ersterTeil = (ListeLogsForSecondThread.Count / 2) - 1;
+            //}
+            //zweiterTeil = ListeLogsForSecondThread.Count - ersterTeil;
+            //
+            //ThreadStart threadStart = new ThreadStart(SecondThread);
+            //Thread mythread = new Thread(threadStart);
+            //mythread.Start();
+            //
+            //ThreadStart threadStart2 = new ThreadStart(ThirdThread);
+            //Thread mythread2 = new Thread(threadStart2);
+            //mythread2.Start();
+            thS1 = new ThreadStart(UploadLogsSelected);
+            th1 = new Thread(thS1);
+            th1.Start();
+
+            //MessageBox.Show("Alle Logs wurden hochgeladen");
+            #endregion
+
+        }
+        Thread th1;
+        ThreadStart thS1;
+
+        private void UploadLogsSelected()
+        {
+            string Uploadtext = "";
+            prozentualabgeschlossen = 0;
+            tabControl1.SelectTab(0);
+
+            foreach (var log in listeLogTries)
+            {
+                //if (txtBoxUploadedLogs.InvokeRequired)
+                //{
+                Uploadtext = UploadLog(log.pfad) + " " + log.versuch + "\r\n";
+                if (txtBoxUploadedLogs.InvokeRequired)
+                    txtBoxUploadedLogs.Invoke((MethodInvoker)delegate {
+                        //Console.WriteLine("Boss: " + log.boss + " und Versuch: " + log.versuch + " und Pfad: " + log.pfad);
+
+                        txtBoxUploadedLogs.AppendText(Uploadtext);
+                        prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                        label4.Text = prozentualabgeschlossen + "%";
+                        progressBarUpload.Value = (int)prozentualabgeschlossen;
+                        Console.WriteLine("So viel: " + listeLogTries.Count);
+                        Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
+                        Console.WriteLine(prozentualabgeschlossen + "%");
+                    });
+                //}
+                //Console.WriteLine("Boss: " + log.boss + " und Versuch: " + log.versuch + " und Pfad: " + log.pfad);
+                //
+                //txtBoxUploadedLogs.AppendText(UploadLog(log.pfad) + " " + log.versuch + "\r\n");
+                //prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                //label4.Text = prozentualabgeschlossen + "%";
+                //progressBarUpload.Value = (int)prozentualabgeschlossen;
+                //Console.WriteLine("So viel: " + listeLogTries.Count);
+                //Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
+                //Console.WriteLine(prozentualabgeschlossen + "%");
+            }
+            //Nur sinnvoll wenn mit den 2 Threads gearbeitet wird
+            //while (true)
+            //{
+            //    Thread.Sleep(100);
+            //    if (mythread.ThreadState == ThreadState.Stopped)
+            //        break;
+            //}
+
+            label4.Text = "100%";
+            progressBarUpload.Value = 100;
+            Update();
+        }
+
+        double ersterTeil = 0;
+        double zweiterTeil = 0;
+        List<LogInfos2> ListeLogsForSecondThread = new List<LogInfos2>();
+        private void SecondThread()
+        {
+            for (int i = 0; i < ersterTeil; i++)
+            {
+                if (txtBoxUploadedLogs.InvokeRequired)
+                {
+                    txtBoxUploadedLogs.Invoke((MethodInvoker)delegate {
+                        Console.WriteLine("Boss: " + listeLogTries[i].boss + " und Versuch: " + listeLogTries[i].versuch + " und Pfad: " + listeLogTries[i].pfad);
+
+                        txtBoxUploadedLogs.AppendText(UploadLog(listeLogTries[i].pfad) + " " + listeLogTries[i].versuch + "\r\n");
+                        prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                        label4.Text = prozentualabgeschlossen + "%";
+                        progressBarUpload.Value = (int)prozentualabgeschlossen;
+                        Console.WriteLine("So viel: " + listeLogTries.Count);
+                        Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
+                        Console.WriteLine(prozentualabgeschlossen + "%");
+                    });
+                }
+            }
+
+
+        }
+        double prozentualabgeschlossen = 0;
+        private void ThirdThread()
+        {
+
+            for (int i = (int)ersterTeil; i < ListeLogsForSecondThread.Count; i++)
+            {
+                if (txtBoxUploadedLogs.InvokeRequired)
+                {
+                    txtBoxUploadedLogs.Invoke((MethodInvoker)delegate {
+                        Console.WriteLine("Boss: " + listeLogTries[i].boss + " und Versuch: " + listeLogTries[i].versuch + " und Pfad: " + listeLogTries[i].pfad);
+
+                        txtBoxUploadedLogs.AppendText(UploadLog(listeLogTries[i].pfad) + " " + listeLogTries[i].versuch + "\r\n");
+                        prozentualabgeschlossen = prozentualabgeschlossen + (100 / listeLogTries.Count);
+                        label4.Text = prozentualabgeschlossen + "%";
+                        progressBarUpload.Value = (int)prozentualabgeschlossen;
+                        Console.WriteLine("So viel: " + listeLogTries.Count);
+                        Console.WriteLine("Jeder Log hat so viel gewicht: " + (1 / listeLogTries.Count) * 100);
+                        Console.WriteLine(prozentualabgeschlossen + "%");
+                    });
+                }
+            }
+        }
+
+        private void Panel2SubRoutineBosseFiltern(string Bossname)
+        {
+            for (int i = 0; i < listeLogTries.Count; i++)
+            {
+                if (listeLogTries[i].boss.Contains(Bossname))
+                {
+                    listeLogTries.RemoveAt(i);
+                    i--;
+                    return;
+                }
+
+            }
+        }
+
+        private void btnThread_Click(object sender, EventArgs e)
+        {
+            UploadV3();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //this.SetDesktopLocation(Properties.Settings.Default.WindowsPosX,Properties.Settings.Default.WindowsPosY);
+            Top = Properties.Settings.Default.WindowsPosY;
+            Left = Properties.Settings.Default.WindowsPosX;
+            if(Properties.Settings.Default.Ordnerstruktur == 0)
+            {
+                radioButton3.Checked = true;
+            }
+            if(Properties.Settings.Default.Ordnerstruktur == 1)
+            {
+                radioButton4.Checked = true;
+            }
+            Update();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.WindowsPosX = Left;
+            Properties.Settings.Default.WindowsPosY = Top;
+            if (radioButton3.Checked)
+            {
+                Properties.Settings.Default.Ordnerstruktur = 0;
+            }
+            if (radioButton4.Checked)
+            {
+                Properties.Settings.Default.Ordnerstruktur = 1;
+            }
+            Properties.Settings.Default.Save();
+        }
+    } 
 }
